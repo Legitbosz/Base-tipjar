@@ -5,6 +5,7 @@ import TipForm from "./components/TipForm";
 import TipFeed from "./components/TipFeed";
 import Stats from "./components/Stats";
 import "./App.css";
+import WithdrawButton from "./components/WithdrawButton";
 import { useResolvedName } from "./hooks/useResolvedName";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
   const [loading, setLoading] = useState(false);
   const [txStatus, setTxStatus] = useState(null); // null | 'pending' | 'success' | 'error'
   const [newTip, setNewTip] = useState(null);
+  const [contractOwner, setContractOwner] = useState(null);
 
   const isCorrectChain = chainId === ACTIVE_CHAIN.id;
 
@@ -63,6 +65,8 @@ export default function App() {
         count: Number(tipCount),
         balance: ethers.formatEther(balance),
       });
+      const owner = await c.owner();
+      setContractOwner(owner.toLowerCase());
     } catch (err) {
       console.error("Failed to fetch data:", err);
     }
@@ -216,6 +220,9 @@ export default function App() {
             onSwitch={switchToBase}
             chainName={ACTIVE_CHAIN.name}
           />
+          {account && contractOwner && account.toLowerCase() === contractOwner && (
+            <WithdrawButton account={account} signer={signer} balance={stats.balance} />
+          )}
         </div>
         <div className="right-col">
           <TipFeed tips={tips} newTip={newTip} />
