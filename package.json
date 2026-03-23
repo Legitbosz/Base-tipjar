@@ -1,0 +1,22 @@
+{
+  "name": "tipjar-base",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A decentralized tip jar dApp built on Base (L2)",
+  "scripts": {
+    "compile": "npx hardhat compile",
+    "test": "npx hardhat test",
+    "deploy:testnet": "npx hardhat run scripts/deploy.js --network base-sepolia",
+    "deploy:mainnet": "npx hardhat run scripts/deploy.js --network base-mainnet",
+    "frontend": "cd frontend && npm install && npm run dev",
+    "verify": "npx hardhat verify --network base-sepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^4.0.0",
+    "hardhat": "^2.19.4",
+    "dotenv": "^16.3.1"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1"
+  }
+}
