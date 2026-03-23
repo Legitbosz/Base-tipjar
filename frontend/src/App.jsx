@@ -5,6 +5,7 @@ import TipForm from "./components/TipForm";
 import TipFeed from "./components/TipFeed";
 import Stats from "./components/Stats";
 import "./App.css";
+import { useResolvedName } from "./hooks/useResolvedName";
 
 export default function App() {
   const [provider, setProvider] = useState(null);
@@ -33,26 +34,9 @@ export default function App() {
     setContract(readContract);
     fetchData(readContract);
 
-    // Listen for new tips via events
-    readContract.on("TipReceived", (sender, amount, message, emoji, timestamp) => {
-      const incoming = {
-        sender,
-        amount: ethers.formatEther(amount),
-        message,
-        emoji,
-        timestamp: Number(timestamp),
-        isNew: true,
-      };
-      setNewTip(incoming);
-      setTips((prev) => [incoming, ...prev]);
-      setStats((prev) => ({
-        ...prev,
-        count: prev.count + 1,
-        total: (parseFloat(prev.total) + parseFloat(incoming.amount)).toFixed(6),
-      }));
-    });
-
-    return () => readContract.removeAllListeners();
+    // Poll every 10 seconds
+    const interval = setInterval(() => fetchData(readContract), 10000);
+    return () => { clearInterval(interval); readContract.removeAllListeners(); };
   }, []);
 
   const fetchData = useCallback(async (c) => {
@@ -193,7 +177,7 @@ export default function App() {
               )}
               <div className="wallet-pill">
                 <span className="wallet-dot" />
-                <span>{shortAddr(account)}</span>
+                <span title={account}>{account ? account.slice(0,6)+"..."+account.slice(-4) : ""}</span>
               </div>
               <button className="btn-disconnect" onClick={disconnect}>
                 ✕

@@ -607,3 +607,13 @@ body {
 
   .footer { flex-direction: column; gap: 8px; text-align: center; }
 }
+/* ─── Name resolution ────────────────────────────────────────────────────── */
+.tip-address-loading {
+  opacity: 0.5;
+  animation: shimmer 1.2s infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+}
