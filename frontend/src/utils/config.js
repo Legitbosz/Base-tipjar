@@ -2,7 +2,7 @@
 // Update CONTRACT_ADDRESS after you deploy with:
 //   npx hardhat run scripts/deploy.js --network base-sepolia
 
-export const CONTRACT_ADDRESS = "0xaBC96fB55aCaaFAE5d1Ceb5DC80131031AE025c9"; // ← replace after deploy
+export const CONTRACT_ADDRESS = "0xAb80113976754CA972936c5674bB1B82b2a150Bd"; // ← replace after deploy
 
 export const CONTRACT_ABI = [
   {
