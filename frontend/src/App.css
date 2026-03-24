@@ -24,7 +24,10 @@
   --shadow:   0 4px 32px rgba(0,0,0,0.4);
 }
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
 
 body {
   background: var(--bg);
@@ -32,6 +35,7 @@ body {
   font-family: 'Syne', sans-serif;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
 }
 
 /* ─── Noise overlay ──────────────────────────────────────────────────────── */
@@ -629,3 +633,50 @@ body {
 .btn-withdraw { background: linear-gradient(135deg, #f59e0b, #f97316); }
 .btn-withdraw:hover:not(.btn-disabled) { background: linear-gradient(135deg, #fbbf24, #fb923c); box-shadow: 0 8px 24px rgba(245,158,11,0.3); }
 .withdraw-empty { font-size: 0.8rem; color: var(--text3); text-align: center; margin-top: 10px; }
+
+/* ─── Mascot ────────────────────────────────────────────────────────────── */
+.mascot-container { display:flex; flex-direction:column; align-items:center; cursor:pointer; user-select:none; }
+.mascot-hint { font-size:0.75rem; color:var(--text3); margin-top:8px; font-family:"DM Mono",monospace; }
+.mascot-wrapper { position:relative; display:flex; flex-direction:column; align-items:center; animation:mascotBounce 0.6s ease-in-out infinite alternate; }
+@keyframes mascotBounce { from { transform:translateY(0px) rotate(-2deg); } to { transform:translateY(-18px) rotate(2deg); } }
+.mascot-wrapper .hat { position:relative; z-index:30; margin-bottom:-18px; animation:hatWiggle 1.2s ease-in-out infinite alternate; }
+@keyframes hatWiggle { from { transform:rotate(-8deg) translateX(-4px); } to { transform:rotate(8deg) translateX(4px); } }
+.mascot-wrapper .hat-brim { width:100px; height:16px; background:#FFD700; border-radius:50%; box-shadow:0 4px 0 #c9a800; position:relative; z-index:2; }
+.mascot-wrapper .hat-top { width:64px; height:58px; background:#FFD700; border-radius:14px 14px 0 0; margin:0 auto; margin-bottom:-4px; position:relative; }
+.mascot-wrapper .hat-band { position:absolute; bottom:10px; left:0; right:0; height:10px; background:#6366f1; border-radius:0; }
+.mascot-wrapper .hat-star { position:absolute; top:10px; left:50%; transform:translateX(-50%); font-size:16px; animation:starSpin 2s linear infinite; }
+@keyframes starSpin { from { transform:translateX(-50%) rotate(0deg); } to { transform:translateX(-50%) rotate(360deg); } }
+.mascot-wrapper .body-group { display:flex; align-items:center; position:relative; z-index:20; }
+.mascot-wrapper .arm { width:22px; height:56px; background:#6366f1; border-radius:20px; position:relative; z-index:1; }
+.mascot-wrapper .arm.left { margin-right:-8px; transform-origin:top right; animation:armLeft 0.6s ease-in-out infinite alternate; border-radius:20px 10px 20px 20px; }
+.mascot-wrapper .arm.right { margin-left:-8px; transform-origin:top left; animation:armRight 0.6s ease-in-out infinite alternate; border-radius:10px 20px 20px 20px; }
+@keyframes armLeft { from { transform:rotate(-50deg); } to { transform:rotate(20deg); } }
+@keyframes armRight { from { transform:rotate(50deg); } to { transform:rotate(-20deg); } }
+.mascot-wrapper .arm::after { content:""; width:20px; height:20px; background:white; border:3px solid #6366f1; border-radius:50%; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); }
+.mascot-wrapper .blob-body { width:115px; height:110px; background:#6366f1; border-radius:50% 50% 45% 45% / 55% 55% 45% 45%; position:relative; z-index:20; box-shadow:0 8px 0 #4338ca, 0 0 40px #6366f166; overflow:visible; }
+.mascot-wrapper .eyes { display:flex; gap:12px; justify-content:center; padding-top:26px; }
+.mascot-wrapper .eye { width:30px; height:30px; background:white; border-radius:50%; position:relative; display:flex; align-items:center; justify-content:center; animation:eyeBlink 3s ease-in-out infinite; }
+@keyframes eyeBlink { 0%,90%,100% { transform:scaleY(1); } 95% { transform:scaleY(0.05); } }
+.mascot-wrapper .pupil { width:14px; height:14px; background:#1a1a2e; border-radius:50%; animation:pupilMove 2s ease-in-out infinite alternate; }
+@keyframes pupilMove { 0% { transform:translate(-3px,-3px); } 50% { transform:translate(3px,3px); } 100% { transform:translate(0,0); } }
+.mascot-wrapper .eye-shine { position:absolute; width:7px; height:7px; background:white; border-radius:50%; top:4px; right:5px; opacity:0.8; }
+.mascot-wrapper .mouth { position:absolute; bottom:22px; left:50%; transform:translateX(-50%); width:44px; height:20px; border-bottom:5px solid white; border-radius:0 0 50px 50px; animation:mouthBop 0.6s ease-in-out infinite alternate; }
+@keyframes mouthBop { from { transform:translateX(-50%) scaleX(0.8); } to { transform:translateX(-50%) scaleX(1.1); } }
+.mascot-wrapper .cheeks { display:flex; justify-content:space-between; padding:0 10px; position:absolute; bottom:34px; left:0; right:0; }
+.mascot-wrapper .cheek { width:18px; height:10px; background:#FF6B9D; border-radius:50%; opacity:0.6; }
+.mascot-wrapper .legs { display:flex; gap:14px; margin-top:-6px; z-index:15; }
+.mascot-wrapper .leg { width:24px; height:44px; background:#6366f1; border-radius:10px; position:relative; box-shadow:2px 4px 0 #4338ca; }
+.mascot-wrapper .leg.left { animation:legLeft 0.6s ease-in-out infinite alternate; transform-origin:top center; }
+.mascot-wrapper .leg.right { animation:legRight 0.6s ease-in-out infinite alternate; transform-origin:top center; }
+@keyframes legLeft { from { transform:rotate(-15deg); } to { transform:rotate(10deg); } }
+@keyframes legRight { from { transform:rotate(15deg); } to { transform:rotate(-10deg); } }
+.mascot-wrapper .leg::after { content:""; width:34px; height:16px; background:#1a1a2e; border-radius:50% 50% 40% 40%; position:absolute; bottom:-8px; left:50%; transform:translateX(-50%); box-shadow:0 4px 0 #000; }
+.mascot-shadow { width:90px; height:16px; background:#00000044; border-radius:50%; margin-top:14px; animation:shadowPulse 0.6s ease-in-out infinite alternate; filter:blur(6px); }
+@keyframes shadowPulse { from { transform:scaleX(0.8); opacity:0.3; } to { transform:scaleX(1.1); opacity:0.6; } }
+.mascot-wrapper .bubble { position:absolute; top:-54px; left:50%; transform:translateX(-50%); background:white; color:#1a1a2e; font-size:13px; padding:8px 14px; border-radius:16px; max-width:180px; white-space:nowrap; text-align:center; line-height:1.3; box-shadow:0 4px 20px #0004; animation:bubblePop 0.4s cubic-bezier(0.34,1.56,0.64,1) both; z-index:50; font-weight:700; }
+.mascot-wrapper .bubble::before { content:""; position:absolute; bottom:-12px; left:50%; transform:translateX(-50%); border:7px solid transparent; border-top-color:white; }
+@keyframes bubblePop { from { transform:scale(0); opacity:0; } to { transform:scale(1); opacity:1; } }
+
+.hero-with-mascot { display:flex; align-items:center; justify-content:space-between; gap:40px; }
+.hero-content { flex:1; }
+@media (max-width:768px) { .hero-with-mascot { flex-direction:column; } }

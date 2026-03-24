@@ -4,9 +4,10 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI, ACTIVE_CHAIN } from "./utils/config";
 import TipForm from "./components/TipForm";
 import TipFeed from "./components/TipFeed";
 import Stats from "./components/Stats";
-import "./App.css";
+import Mascot from "./components/Mascot";
 import WithdrawButton from "./components/WithdrawButton";
 import { useResolvedName } from "./hooks/useResolvedName";
+import "./App.css";
 
 export default function App() {
   const [provider, setProvider] = useState(null);
@@ -17,26 +18,17 @@ export default function App() {
   const [tips, setTips] = useState([]);
   const [stats, setStats] = useState({ total: "0", count: 0, balance: "0" });
   const [loading, setLoading] = useState(false);
-  const [txStatus, setTxStatus] = useState(null); // null | 'pending' | 'success' | 'error'
+  const [txStatus, setTxStatus] = useState(null);
   const [newTip, setNewTip] = useState(null);
   const [contractOwner, setContractOwner] = useState(null);
 
   const isCorrectChain = chainId === ACTIVE_CHAIN.id;
 
-  // ── Init read-only provider ──────────────────────────────────────────────
   useEffect(() => {
-    const readProvider = new ethers.JsonRpcProvider(
-      ACTIVE_CHAIN.rpcUrls.default.http[0]
-    );
-    const readContract = new ethers.Contract(
-      CONTRACT_ADDRESS,
-      CONTRACT_ABI,
-      readProvider
-    );
+    const readProvider = new ethers.JsonRpcProvider(ACTIVE_CHAIN.rpcUrls.default.http[0]);
+    const readContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, readProvider);
     setContract(readContract);
     fetchData(readContract);
-
-    // Poll every 10 seconds
     const interval = setInterval(() => fetchData(readContract), 10000);
     return () => { clearInterval(interval); readContract.removeAllListeners(); };
   }, []);
@@ -44,22 +36,15 @@ export default function App() {
   const fetchData = useCallback(async (c) => {
     try {
       const [rawTips, totalReceived, tipCount, balance] = await Promise.all([
-        c.getTips(0, 20),
-        c.totalTipsReceived(),
-        c.totalTipCount(),
-        c.getBalance(),
+        c.getTips(0, 20), c.totalTipsReceived(), c.totalTipCount(), c.getBalance(),
       ]);
-
-      setTips(
-        rawTips.map((t) => ({
-          sender: t.sender,
-          amount: ethers.formatEther(t.amount),
-          message: t.message,
-          emoji: t.emoji,
-          timestamp: Number(t.timestamp),
-        }))
-      );
-
+      setTips(rawTips.map((t) => ({
+        sender: t.sender,
+        amount: ethers.formatEther(t.amount),
+        message: t.message,
+        emoji: t.emoji,
+        timestamp: Number(t.timestamp),
+      })));
       setStats({
         total: ethers.formatEther(totalReceived),
         count: Number(tipCount),
@@ -67,82 +52,55 @@ export default function App() {
       });
       const owner = await c.owner();
       setContractOwner(owner.toLowerCase());
-    } catch (err) {
-      console.error("Failed to fetch data:", err);
-    }
+    } catch (err) { console.error("Failed to fetch data:", err); }
   }, []);
 
-  // ── Connect wallet ───────────────────────────────────────────────────────
   const connectWallet = async () => {
-    if (!window.ethereum) {
-      alert("Please install MetaMask or a Web3 wallet!");
-      return;
-    }
-
+    if (!window.ethereum) { alert("Please install MetaMask!"); return; }
     try {
       const web3Provider = new ethers.BrowserProvider(window.ethereum);
       const accounts = await web3Provider.send("eth_requestAccounts", []);
       const network = await web3Provider.getNetwork();
       const web3Signer = await web3Provider.getSigner();
-
       setProvider(web3Provider);
       setSigner(web3Signer);
       setAccount(accounts[0]);
       setChainId(Number(network.chainId));
-
       const rw = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, web3Signer);
       setContract(rw);
-
       window.ethereum.on("accountsChanged", (accs) => {
         setAccount(accs[0] || null);
         if (!accs[0]) disconnect();
       });
       window.ethereum.on("chainChanged", () => window.location.reload());
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
   const disconnect = () => {
-    setProvider(null);
-    setSigner(null);
-    setAccount(null);
-    setChainId(null);
+    setProvider(null); setSigner(null); setAccount(null); setChainId(null);
   };
 
-  // ── Switch to Base ───────────────────────────────────────────────────────
   const switchToBase = async () => {
     try {
       await window.ethereum.request({
         method: "wallet_addEthereumChain",
-        params: [
-          {
-            chainId: `0x${ACTIVE_CHAIN.id.toString(16)}`,
-            chainName: ACTIVE_CHAIN.name,
-            nativeCurrency: ACTIVE_CHAIN.nativeCurrency,
-            rpcUrls: ACTIVE_CHAIN.rpcUrls.default.http,
-            blockExplorerUrls: [ACTIVE_CHAIN.blockExplorers.default.url],
-          },
-        ],
+        params: [{
+          chainId: "0x" + ACTIVE_CHAIN.id.toString(16),
+          chainName: ACTIVE_CHAIN.name,
+          nativeCurrency: ACTIVE_CHAIN.nativeCurrency,
+          rpcUrls: ACTIVE_CHAIN.rpcUrls.default.http,
+          blockExplorerUrls: [ACTIVE_CHAIN.blockExplorers.default.url],
+        }],
       });
-    } catch (err) {
-      console.error(err);
-    }
+    } catch (err) { console.error(err); }
   };
 
-  // ── Send tip ─────────────────────────────────────────────────────────────
   const sendTip = async ({ amount, message, emoji }) => {
     if (!signer || !isCorrectChain) return;
-
-    setLoading(true);
-    setTxStatus("pending");
-
+    setLoading(true); setTxStatus("pending");
     try {
       const rwContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
-      const tx = await rwContract.tip(message, emoji, {
-        value: ethers.parseEther(amount),
-      });
-
+      const tx = await rwContract.tip(message, emoji, { value: ethers.parseEther(amount) });
       await tx.wait();
       setTxStatus("success");
       setTimeout(() => setTxStatus(null), 4000);
@@ -150,19 +108,14 @@ export default function App() {
       console.error(err);
       setTxStatus("error");
       setTimeout(() => setTxStatus(null), 4000);
-    } finally {
-      setLoading(false);
-    }
+    } finally { setLoading(false); }
   };
 
-  const shortAddr = (addr) =>
-    addr ? `${addr.slice(0, 6)}...${addr.slice(-4)}` : "";
+  const { name: resolvedAccount } = useResolvedName(account);
 
   return (
     <div className="app">
       <div className="noise" />
-
-      {/* ── Header ── */}
       <header className="header">
         <div className="header-left">
           <div className="logo">
@@ -175,38 +128,27 @@ export default function App() {
           {account ? (
             <div className="wallet-connected">
               {!isCorrectChain && (
-                <button className="btn-switch" onClick={switchToBase}>
-                  Switch to {ACTIVE_CHAIN.name}
-                </button>
+                <button className="btn-switch" onClick={switchToBase}>Switch to {ACTIVE_CHAIN.name}</button>
               )}
               <div className="wallet-pill">
                 <span className="wallet-dot" />
-                <span title={account}>{account ? account.slice(0,6)+"..."+account.slice(-4) : ""}</span>
+                <span title={account}>{resolvedAccount}</span>
               </div>
-              <button className="btn-disconnect" onClick={disconnect}>
-                ✕
-              </button>
+              <button className="btn-disconnect" onClick={disconnect}>✕</button>
             </div>
           ) : (
-            <button className="btn-connect" onClick={connectWallet}>
-              Connect Wallet
-            </button>
+            <button className="btn-connect" onClick={connectWallet}>Connect Wallet</button>
           )}
         </div>
       </header>
-
-      {/* ── Hero ── */}
-      <section className="hero">
-        <div className="hero-tag">Built on Base ⚡</div>
-        <h1 className="hero-title">
-          Drop a tip.<br />Leave a mark.
-        </h1>
-        <p className="hero-sub">
-          Send on-chain tips with a message. Every tip lives forever on Base.
-        </p>
+      <section className="hero hero-with-mascot">
+        <div className="hero-content">
+          <div className="hero-tag">Built on Base ⚡</div>
+          <h1 className="hero-title">Drop a tip.<br />Leave a mark.</h1>
+          <p className="hero-sub">Send on-chain tips with a message. Every tip lives forever on Base.</p>
+        </div>
+        <Mascot tipCount={stats.count} txStatus={txStatus} />
       </section>
-
-      {/* ── Main grid ── */}
       <main className="main-grid">
         <div className="left-col">
           <Stats stats={stats} />
@@ -228,14 +170,9 @@ export default function App() {
           <TipFeed tips={tips} newTip={newTip} />
         </div>
       </main>
-
       <footer className="footer">
         <span>TipJar · Built on {ACTIVE_CHAIN.name} · Open source</span>
-        <a
-          href={`${ACTIVE_CHAIN.blockExplorers.default.url}/address/${CONTRACT_ADDRESS}`}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <a href={ACTIVE_CHAIN.blockExplorers.default.url + "/address/" + CONTRACT_ADDRESS} target="_blank" rel="noopener noreferrer">
           View Contract ↗
         </a>
       </footer>
