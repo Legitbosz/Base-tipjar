@@ -164,7 +164,9 @@ export default function App() {
           <h1 className="hero-title">Drop a tip.<br />Leave a mark.</h1>
           <p className="hero-sub">Send on-chain tips with a message. Every tip lives forever on Base.</p>
         </div>
-        <Mascot tipCount={stats.count} txStatus={txStatus} />
+        <div className="hero-mascot-wrap">
+          <Mascot tipCount={stats.count} txStatus={txStatus} />
+        </div>
       </section>
 
       <main className="main-grid">
