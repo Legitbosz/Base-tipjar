@@ -1,136 +1,106 @@
-# 🫙 TipJar — Built on Base
+# 🫙 TipJar — On-Chain Tipping on Base
 
-A decentralized tip jar dApp on [Base](https://base.org) (Ethereum L2). Send ETH tips with a message and emoji — every tip lives on-chain forever and shows up in a real-time public feed.
+TipJar is a decentralized tipping platform built on [Base](https://base.org). Send on-chain tips with a message and emoji — every tip lives forever on Base.
 
-![Base](https://img.shields.io/badge/Built%20on-Base-0052FF?style=flat-square)
-![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?style=flat-square)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=flat-square)
+![Built on Base](https://img.shields.io/badge/Built%20on-Base-0052FF?style=for-the-badge)
+![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge)
+![Vite](https://img.shields.io/badge/Vite-5-646CFF?style=for-the-badge)
+![Ethers](https://img.shields.io/badge/Ethers.js-6-3C3C3D?style=for-the-badge)
 
 ---
 
 ## ✨ Features
 
-- **Send on-chain tips** with a custom message (up to 280 chars) and emoji
-- **Real-time feed** — tips stream in live via contract events
-- **Stats dashboard** — total ETH tipped, tip count, balance in jar
-- **Owner withdrawal** — creator can pull accumulated ETH
-- **Base Sepolia testnet** ready, one config change for mainnet
-- **Wallet connect** — MetaMask / any injected Web3 wallet
-
----
-
-## 🗂 Project Structure
-
-```
-tipjar/
-├── contracts/
-│   └── TipJar.sol          # Solidity smart contract
-├── scripts/
-│   └── deploy.js           # Hardhat deployment script
-├── test/
-│   └── TipJar.test.js      # Contract tests
-├── frontend/
-│   └── src/
-│       ├── App.jsx          # Main app + wallet logic
-│       ├── App.css          # Styles
-│       ├── components/
-│       │   ├── TipForm.jsx  # Tip sending form
-│       │   ├── TipFeed.jsx  # Live feed of tips
-│       │   └── Stats.jsx    # Stats cards
-│       └── utils/
-│           └── config.js    # Contract ABI + chain config
-├── hardhat.config.js
-└── package.json
-```
+- 💸 Send ETH tips with a custom message and emoji
+- 🔵 Resolves Base names (Basenames) automatically
+- 🕺 Animated mascot that reacts to every tip
+- 📜 Live on-chain tip feed
+- 📊 Real-time stats (total tips, count, balance)
+- 🔐 Owner withdrawal button
+- ⚡ Built on Base for fast, cheap transactions
 
 ---
 
 ## 🚀 Getting Started
 
-### 1. Install dependencies
+### Prerequisites
+- Node.js 18+
+- A Web3 wallet (Rabby, MetaMask, etc.)
+- ETH on Base network
+
+### Installation
 
 ```bash
+git clone https://github.com/yourusername/Base-Repo.git
+cd Base-Repo/frontend
 npm install
 ```
 
-### 2. Set up environment
+### Environment Setup
 
 ```bash
 cp .env.example .env
-# Fill in PRIVATE_KEY and BASESCAN_API_KEY
 ```
 
-### 3. Compile & test the contract
+Fill in your values in `.env`.
+
+### Run locally
 
 ```bash
-npm run compile
-npm run test
+npm run dev
 ```
 
-### 4. Deploy to Base Sepolia testnet
+Open [http://localhost:5173](http://localhost:5173)
+
+### Build for production
 
 ```bash
-npm run deploy:testnet
-```
-
-Get testnet ETH from the [Base Sepolia faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet).
-
-### 5. Update the frontend config
-
-Open `frontend/src/utils/config.js` and replace:
-```js
-export const CONTRACT_ADDRESS = "0x..."; // ← paste your deployed address
-```
-
-### 6. Run the frontend
-
-```bash
-npm run frontend
-```
-
-Visit `http://localhost:5173` 🎉
-
----
-
-## 📜 Contract Reference
-
-**TipJar.sol** — deployed on Base Sepolia
-
-| Function | Description |
-|---|---|
-| `tip(message, emoji)` | Send ETH tip with message & emoji (payable) |
-| `withdraw()` | Owner withdraws all ETH from the jar |
-| `getTips(offset, limit)` | Paginated tip history (newest first) |
-| `getTipCount()` | Total number of tips |
-| `getBalance()` | Current ETH balance in contract |
-
-**Events emitted:**
-- `TipReceived(sender, amount, message, emoji, timestamp)`
-- `Withdrawn(owner, amount)`
-
----
-
-## 🔗 Deployment
-
-| Network | Status |
-|---|---|
-| Base Sepolia (testnet) | ✅ Ready |
-| Base Mainnet | Change `ACTIVE_CHAIN` in `config.js` |
-
-To verify on Basescan after deploying:
-```bash
-npx hardhat verify --network base-sepolia <CONTRACT_ADDRESS> "My Tip Jar" "Buy me a coffee"
+npm run build
 ```
 
 ---
 
-## 🛣 Roadmap ideas
+## 🏗 Tech Stack
 
-- [ ] Multi-creator factory contract (deploy a jar for anyone)
-- [ ] Leaderboard of top tippers
-- [ ] ENS / Basename display instead of raw addresses  
-- [ ] IPFS avatar upload per tip
-- [ ] Email/push notifications via XMTP when a tip arrives
+| Layer | Tech |
+|-------|------|
+| Frontend | React 18 + Vite 5 |
+| Styling | CSS Variables + Custom Animations |
+| Web3 | Ethers.js v6 + Viem |
+| Network | Base Mainnet |
+| Name Resolution | Basenames (Base ENS) |
+| Wallet | Rabby / MetaMask via window.ethereum |
+
+---
+
+## 📁 Project Structure
+
+```
+frontend/
+├── src/
+│   ├── components/
+│   │   ├── Mascot.jsx        # Dancing mascot
+│   │   ├── TipForm.jsx       # Send tip form
+│   │   ├── TipFeed.jsx       # Live tip feed
+│   │   ├── Stats.jsx         # Stats display
+│   │   └── WithdrawButton.jsx
+│   ├── hooks/
+│   │   └── useResolvedName.js # Basename resolution hook
+│   ├── utils/
+│   │   ├── config.js         # Contract config
+│   │   ├── resolveName.js    # Basename resolver
+│   │   ├── formatAddress.js  # Address formatting
+│   │   └── formatEther.js    # ETH formatting
+│   ├── App.jsx
+│   └── App.css
+└── vite.config.js
+```
+
+---
+
+## 🔗 Contract
+
+Deployed on Base Mainnet. View on [Basescan](https://basescan.org).
 
 ---
 
