@@ -97,6 +97,7 @@ export default function TipFeed({ tips, newTip }) {
   }, [tips, filter, search]);
 
   const totalEth = tips.reduce((acc, t) => acc + parseFloat(t.amount), 0);
+  const filteredEth = filtered.reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
   return (
     <div className="tip-feed card">
@@ -106,7 +107,7 @@ export default function TipFeed({ tips, newTip }) {
           <h2 className="card-title" style={{ marginBottom: 0 }}>Live Feed</h2>
           {tips.length > 0 && (
             <div className="feed-summary">
-              {tips.length} tips · {totalEth.toFixed(4)} ETH total
+              {filtered.length} of {tips.length} tips · {filteredEth.toFixed(4)} ETH
             </div>
           )}
         </div>
