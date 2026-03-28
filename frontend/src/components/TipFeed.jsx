@@ -7,8 +7,7 @@ function timeAgo(timestamp) {
   if (diff < 60) return "just now";
   if (diff < 3600) return Math.floor(diff / 60) + "m ago";
   if (diff < 86400) return Math.floor(diff / 3600) + "h ago";
-  if (diff < 604800) return Math.floor(diff / 86400) + "d ago";
-  return Math.floor(diff / 604800) + "w ago";
+  return Math.floor(diff / 86400) + "d ago";
 }
 
 function TipSender({ address, isNew }) {
@@ -30,7 +29,7 @@ function TipSender({ address, isNew }) {
   );
 }
 
-function TipCard({ tip, isNew, rank }) {
+function TipCard({ tip, isNew }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { requestAnimationFrame(() => setVisible(true)); }, []);
 
@@ -40,21 +39,20 @@ function TipCard({ tip, isNew, rank }) {
     (isNew ? " tip-card-new" : "");
 
   const ethAmount = parseFloat(tip.amount);
-  const isWhale = ethAmount >= 0.005;
+  const isWhale = ethAmount >= 0.01;
 
   return (
     <div className={cardClass}>
       <div className="tip-card-top">
-        {rank && <div className="tip-rank">#{rank}</div>}
         <div className={`tip-emoji-bubble ${isWhale ? "tip-emoji-whale" : ""}`}>
-          {tip.emoji || "🔥"}
+          {tip.emoji || "💜"}
         </div>
         <div className="tip-meta">
           <TipSender address={tip.sender} isNew={isNew} />
           <div className="tip-time">{timeAgo(tip.timestamp)}</div>
         </div>
         <div className={`tip-amount ${isWhale ? "tip-amount-whale" : ""}`}>
-          {isWhale && <span title="Whale tip">🐋 </span>}{ethAmount.toFixed(4)} ETH
+          {ethAmount.toFixed(4)} ETH
         </div>
       </div>
       {tip.message && (
@@ -64,11 +62,19 @@ function TipCard({ tip, isNew, rank }) {
           <span className="tip-message-quote">"</span>
         </div>
       )}
+      <a
+        href={`https://basescan.org/address/${tip.sender}`}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="tip-basescan-link"
+      >
+        View on Basescan ↗
+      </a>
     </div>
   );
 }
 
-const FILTERS = ["All", "Top Tips", "With Message", "Recent", "Oldest"];
+const FILTERS = ["All", "Top Tips", "With Message", "Recent"];
 
 export default function TipFeed({ tips, newTip }) {
   const [filter, setFilter] = useState("All");
@@ -83,8 +89,6 @@ export default function TipFeed({ tips, newTip }) {
       result = result.filter((t) => t.message && t.message.trim().length > 0);
     } else if (filter === "Recent") {
       result.sort((a, b) => b.timestamp - a.timestamp);
-    } else if (filter === "Oldest") {
-      result.sort((a, b) => a.timestamp - b.timestamp);
     }
 
     if (search.trim()) {
@@ -100,7 +104,6 @@ export default function TipFeed({ tips, newTip }) {
   }, [tips, filter, search]);
 
   const totalEth = tips.reduce((acc, t) => acc + parseFloat(t.amount), 0);
-  const filteredEth = filtered.reduce((acc, t) => acc + parseFloat(t.amount), 0);
 
   return (
     <div className="tip-feed card">
@@ -110,7 +113,7 @@ export default function TipFeed({ tips, newTip }) {
           <h2 className="card-title" style={{ marginBottom: 0 }}>Live Feed</h2>
           {tips.length > 0 && (
             <div className="feed-summary">
-              {filtered.length} of {tips.length} tips · {filteredEth.toFixed(4)} ETH
+              {tips.length} tips · {totalEth.toFixed(4)} ETH total
             </div>
           )}
         </div>
@@ -124,7 +127,7 @@ export default function TipFeed({ tips, newTip }) {
 
       {/* Search */}
       {tips.length > 0 && (
-        <div className="feed-search-wrap" style={{ position: "relative" }}>
+        <div className="feed-search-wrap">
           <input
             className="feed-search"
             type="text"
@@ -132,9 +135,6 @@ export default function TipFeed({ tips, newTip }) {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
-          {search && (
-            <button className="feed-search-clear" onClick={() => { setSearch(""); setFilter("All"); }}>✕ Clear</button>
-          )}
         </div>
       )}
 
@@ -150,13 +150,6 @@ export default function TipFeed({ tips, newTip }) {
               {f}
             </button>
           ))}
-        </div>
-      )}
-
-      {/* Result count */}
-      {tips.length > 0 && search.trim() && (
-        <div className="feed-result-count">
-          {filtered.length} result{filtered.length !== 1 ? "s" : ""} found
         </div>
       )}
 
@@ -179,7 +172,6 @@ export default function TipFeed({ tips, newTip }) {
             <TipCard
               key={tip.sender + "-" + tip.timestamp + "-" + i}
               tip={tip}
-              rank={i + 1}
               isNew={
                 newTip &&
                 tip.timestamp === newTip.timestamp &&
