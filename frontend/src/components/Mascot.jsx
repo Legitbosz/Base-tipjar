@@ -153,9 +153,13 @@ export default function Mascot({ tipCount = 0, txStatus }) {
       setIsHype(true);
       setBubbleKey((k) => k + 1);
       spawnCoins();
-      // Return to normal dance after 4 seconds (matches App.jsx's 4s reset)
+      // Return to normal after 4 seconds
       const t = setTimeout(() => setIsHype(false), 4000);
       return () => clearTimeout(t);
+    }
+    // When txStatus resets to null, stop hype immediately
+    if (txStatus === null) {
+      setIsHype(false);
     }
   }, [txStatus]);
 
