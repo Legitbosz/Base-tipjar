@@ -725,3 +725,57 @@ body {
 
 .live-indicator { display:flex; align-items:center; gap:6px; font-family:'DM Mono',monospace; font-size:0.72rem; color:var(--success); }
 .live-dot { width:7px; height:7px; border-radius:50%; background:var(--success); box-shadow:0 0 8px var(--success); animation:pulse 2s infinite; }
+
+/* ─── Tip Tabs ───────────────────────────────────────────────────────────── */
+.tip-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  background: var(--bg3);
+  border-radius: var(--radius-sm);
+  padding: 4px;
+}
+.tip-tab {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-family: 'Syne', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tip-tab:hover { color: var(--text); }
+.tip-tab-active {
+  background: var(--bg2);
+  color: var(--text);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+/* ─── Send to Friend ─────────────────────────────────────────────────────── */
+.input-error { border-color: var(--error) !important; }
+.input-error-msg { font-size: 0.75rem; color: var(--error); margin-top: 4px; }
+.input-valid-msg { font-size: 0.75rem; color: var(--success); margin-top: 4px; }
+
+.send-warning {
+  background: rgba(245, 158, 11, 0.08);
+  border: 1px solid rgba(245, 158, 11, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.8rem;
+  color: var(--warning);
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+
+.tx-link {
+  display: block;
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--accent2);
+  text-decoration: none;
+}
+.tx-link:hover { text-decoration: underline; }
