@@ -68,7 +68,7 @@ function TipCard({ tip, isNew, rank }) {
   );
 }
 
-const FILTERS = ["All", "Top Tips", "With Message", "Recent"];
+const FILTERS = ["All", "Top Tips", "With Message", "Recent", "Oldest"];
 
 export default function TipFeed({ tips, newTip }) {
   const [filter, setFilter] = useState("All");
@@ -83,6 +83,8 @@ export default function TipFeed({ tips, newTip }) {
       result = result.filter((t) => t.message && t.message.trim().length > 0);
     } else if (filter === "Recent") {
       result.sort((a, b) => b.timestamp - a.timestamp);
+    } else if (filter === "Oldest") {
+      result.sort((a, b) => a.timestamp - b.timestamp);
     }
 
     if (search.trim()) {
