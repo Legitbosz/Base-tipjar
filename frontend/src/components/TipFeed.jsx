@@ -53,7 +53,7 @@ function TipCard({ tip, isNew }) {
           <div className="tip-time">{timeAgo(tip.timestamp)}</div>
         </div>
         <div className={`tip-amount ${isWhale ? "tip-amount-whale" : ""}`}>
-          {ethAmount.toFixed(4)} ETH
+          {isWhale && <span title="Whale tip">🐋 </span>}{ethAmount.toFixed(4)} ETH
         </div>
       </div>
       {tip.message && (
