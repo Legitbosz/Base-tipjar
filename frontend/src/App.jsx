@@ -7,7 +7,6 @@ import "./App.css";
 // Always load these immediately — they're above the fold
 import Mascot from "./components/Mascot";
 import TipForm from "./components/TipForm";
-import WalletModal from "./components/WalletModal";
 
 // Lazy load these — they're below the fold or conditional
 const TipFeed = lazy(() => import("./components/TipFeed"));
@@ -38,7 +37,6 @@ export default function App() {
   const [txStatus, setTxStatus] = useState(null);
   const [newTip, setNewTip] = useState(null);
   const [contractOwner, setContractOwner] = useState(null);
-  const [showWalletModal, setShowWalletModal] = useState(false);
 
   const isCorrectChain = chainId === ACTIVE_CHAIN.id;
 
@@ -70,7 +68,8 @@ export default function App() {
       });
       const owner = await c.owner();
       setContractOwner(owner.toLowerCase());
-    } catch (err) { console.error("Failed to fetch data:", err); }
+      setAppReady(true);
+    } catch (err) { console.error("Failed to fetch data:", err); setAppReady(true); }
   }, []);
 
   const connectWallet = async () => {
@@ -116,20 +115,25 @@ export default function App() {
   const sendTip = async ({ amount, message, emoji }) => {
     if (!signer || !isCorrectChain) return;
     setLoading(true); setTxStatus("pending");
+    toast("Transaction pending...", "Waiting for confirmation.", "pending", 10000);
     try {
       const rwContract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
       const tx = await rwContract.tip(message, emoji, { value: ethers.parseEther(amount) });
       await tx.wait();
       setTxStatus("success");
+      toast("Tip sent! 🎉", "Your tip is now on-chain forever.", "success");
       setTimeout(() => setTxStatus(null), 4000);
     } catch (err) {
       console.error(err);
       setTxStatus("error");
+      toast("Transaction failed", "Please try again.", "error");
       setTimeout(() => setTxStatus(null), 4000);
     } finally { setLoading(false); }
   };
 
   const { name: resolvedAccount } = useResolvedName(account);
+
+  if (!appReady) return <AppSkeleton />;
 
   return (
     <div className="app">
@@ -148,10 +152,11 @@ export default function App() {
               {!isCorrectChain && (
                 <button className="btn-switch" onClick={switchToBase}>Switch to {ACTIVE_CHAIN.name}</button>
               )}
-              <div className="wallet-pill wallet-pill-clickable" onClick={() => setShowWalletModal(true)}>
+              <div className="wallet-pill">
                 <span className="wallet-dot" />
                 <span title={account}>{resolvedAccount}</span>
               </div>
+              <button className="btn-disconnect" onClick={disconnect}>✕</button>
             </div>
           ) : (
             <button className="btn-connect" onClick={connectWallet}>Connect Wallet</button>
@@ -205,15 +210,6 @@ export default function App() {
           View Contract ↗
         </a>
       </footer>
-      {showWalletModal && (
-        <WalletModal
-          account={account}
-          resolvedName={resolvedAccount}
-          provider={provider}
-          onDisconnect={disconnect}
-          onClose={() => setShowWalletModal(false)}
-        />
-      )}
     </div>
   );
 }
