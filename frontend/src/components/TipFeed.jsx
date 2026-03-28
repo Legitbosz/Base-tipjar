@@ -30,7 +30,7 @@ function TipSender({ address, isNew }) {
   );
 }
 
-function TipCard({ tip, isNew }) {
+function TipCard({ tip, isNew, rank }) {
   const [visible, setVisible] = useState(false);
   useEffect(() => { requestAnimationFrame(() => setVisible(true)); }, []);
 
@@ -45,6 +45,7 @@ function TipCard({ tip, isNew }) {
   return (
     <div className={cardClass}>
       <div className="tip-card-top">
+        {rank && <div className="tip-rank">#{rank}</div>}
         <div className={`tip-emoji-bubble ${isWhale ? "tip-emoji-whale" : ""}`}>
           {tip.emoji || "🔥"}
         </div>
@@ -176,6 +177,7 @@ export default function TipFeed({ tips, newTip }) {
             <TipCard
               key={tip.sender + "-" + tip.timestamp + "-" + i}
               tip={tip}
+              rank={i + 1}
               isNew={
                 newTip &&
                 tip.timestamp === newTip.timestamp &&
