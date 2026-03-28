@@ -779,3 +779,66 @@ body {
   text-decoration: none;
 }
 .tx-link:hover { text-decoration: underline; }
+
+/* ─── Basescan tip link ──────────────────────────────────────────────────── */
+.tip-basescan-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  color: var(--text3);
+  text-decoration: none;
+  margin-top: 8px;
+  transition: color 0.2s;
+}
+.tip-basescan-link:hover { color: var(--accent2); }
+
+/* ─── Mobile responsive fixes ───────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .app { padding: 0 16px; }
+
+  .header { padding: 16px 0; }
+  .logo-text { font-size: 1rem; }
+
+  .hero { padding: 32px 0 24px; }
+  .hero-title { font-size: clamp(2rem, 8vw, 3rem); }
+  .hero-sub { font-size: 0.95rem; }
+  .hero-with-mascot { flex-direction: column; gap: 24px; }
+  .hero-mascot-wrap { align-self: center; padding: 20px 0 0; }
+
+  .main-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 48px; }
+
+  .stats-row { grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .stat-card { padding: 14px 8px; }
+  .stat-value { font-size: 1rem; }
+  .stat-label { font-size: 0.6rem; }
+
+  .card { padding: 20px 16px; }
+  .card-title { font-size: 1rem; }
+
+  .tip-tabs { gap: 4px; }
+  .tip-tab { font-size: 0.78rem; padding: 8px 10px; }
+
+  .emoji-grid { gap: 6px; }
+  .emoji-btn { width: 36px; height: 36px; font-size: 1rem; }
+
+  .amount-presets { gap: 6px; }
+  .preset-btn { padding: 6px 10px; font-size: 0.78rem; }
+
+  .feed-filters { gap: 6px; }
+  .feed-filter-btn { padding: 5px 10px; font-size: 0.72rem; }
+
+  .feed-list { max-height: 400px; }
+
+  .footer { flex-direction: column; gap: 8px; text-align: center; padding: 16px 0; }
+
+  .wallet-pill { max-width: 140px; overflow: hidden; }
+  .wallet-pill span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 100px; }
+}
+
+@media (max-width: 480px) {
+  .stats-row { grid-template-columns: 1fr; }
+  .hero-title { font-size: 2rem; }
+  .btn-connect { padding: 8px 16px; font-size: 0.82rem; }
+}
