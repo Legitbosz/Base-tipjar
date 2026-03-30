@@ -4,6 +4,9 @@ import { CONTRACT_ADDRESS, CONTRACT_ABI, ACTIVE_CHAIN } from "./utils/config";
 import { useResolvedName } from "./hooks/useResolvedName";
 import "./App.css";
 
+// TipJar — On-chain tipping platform built on Base
+// 10 smart contracts · Real-time feed · Basename resolution
+
 // Always load these immediately — they're above the fold
 import Mascot from "./components/Mascot";
 import TipForm from "./components/TipForm";
