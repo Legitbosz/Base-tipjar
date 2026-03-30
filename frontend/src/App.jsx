@@ -173,7 +173,7 @@ export default function App() {
       <section className="hero hero-with-mascot">
         <div className="hero-content">
           <div className="hero-tag">Built on Base ⚡ · 10 Contracts Deployed</div>
-          <h1 className="hero-title">Drop a tip.<br />Leave a mark.</h1>
+          <h1 className="hero-title">Drop a tip.<br />Leave a mark.<br />Forever.</h1>
           <p className="hero-sub">Send on-chain tips with a message and emoji. Every tip lives forever on Base — permanent, transparent, unstoppable.</p>
         </div>
         <div className="hero-mascot-wrap">
