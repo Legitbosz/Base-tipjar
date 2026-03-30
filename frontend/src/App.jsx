@@ -98,6 +98,7 @@ export default function App() {
   const disconnect = () => {
     setProvider(null); setSigner(null); setAccount(null); setChainId(null);
     document.title = "TipJar — Base";
+    toast("Wallet disconnected", "", "info");
   };
 
   const switchToBase = async () => {
