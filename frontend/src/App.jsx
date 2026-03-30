@@ -86,6 +86,7 @@ export default function App() {
       document.title = "TipJar — Connected";
       const rw = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, web3Signer);
       setContract(rw);
+      toast("Wallet connected! 🎉", accounts[0].slice(0,6) + "..." + accounts[0].slice(-4), "success");
       window.ethereum.on("accountsChanged", (accs) => {
         setAccount(accs[0] || null);
         if (!accs[0]) disconnect();
