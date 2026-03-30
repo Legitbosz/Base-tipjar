@@ -145,7 +145,7 @@ export default function App() {
       <div className="noise" />
       <header className="header">
         <div className="header-left">
-          <div className="logo">
+          <div className="logo" style={{cursor:"pointer"}} onClick={() => window.scrollTo({top:0, behavior:"smooth"})}>
             <span className="logo-icon">🫙</span>
             <span className="logo-text">TipJar</span>
             <span className="logo-badge">Base</span>
