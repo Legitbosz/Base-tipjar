@@ -209,6 +209,9 @@ export default function App() {
         <a href={ACTIVE_CHAIN.blockExplorers.default.url + "/address/" + CONTRACT_ADDRESS} target="_blank" rel="noopener noreferrer">
           View Contract ↗
         </a>
+        <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+          GitHub ↗
+        </a>
       </footer>
     </div>
   );
